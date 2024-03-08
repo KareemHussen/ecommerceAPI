@@ -48,24 +48,49 @@ class ProductController extends Controller
         return $this->respondOk($product, 'product fetched successfully');
     }
 
+    #TODO("Optimize -------------------------------------------------------------------------------------------------------------")
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
         $data = $request->validated();
+        $category_id = $data['category_id'] ?? $product->category_id;
 
-        if ($request->hasFile('image')) { 
+        if ($request->hasFile('image') && $data['category_id']) {
+            
 
             if(File::exists($product->image)) {
                 File::delete($product->image);
             }   
 
-            // If Changed Category i have to move the image to new Folder
             $file = $request->file('image');
             $name =  uniqid() . '.' . $file->extension();
-            $file->storeAs('public/images/categories/'. $data['category_id'] . "/products/" , $name);
-            $data['image'] = 'storage/images/categories/'.$data['category_id']. "/products/" .$name;
+            $file->storeAs('public/images/categories/'. $category_id . "/products/" , $name);
+            $data['image'] = 'storage/images/categories/'.$category_id. "/products/" .$name;
+
+        } else if (!$request->hasFile('image') && $data['category_id'] ) {
+            
+            // move image to new folder
+
+            if(File::exists($product->image)) {
+                $name = basename($product->image);
+                $destinationDirectory = 'storage/images/categories/'. $data['category_id'] . '/products/';
+
+                // Destination file path
+                $destinationFilePath = $destinationDirectory . $name;
+
+                // Create the destination directory if it does not exist
+                if (!File::exists($destinationDirectory)) {
+                    File::makeDirectory($destinationDirectory, 0755, true);
+                }
+
+
+                File::move($product->image, $destinationFilePath);
+                $data['image'] = 'storage/images/categories/'.$data['category_id']. "/products/" .$name;
+
+            }   
+
         } 
 
         $product->update($data);

@@ -23,7 +23,7 @@ Route::prefix("auth")->group(function(){
     Route::post("/register", [\App\Http\Controllers\API\V1\AuthController::class, "register"]);
     Route::post("/login", [\App\Http\Controllers\API\V1\AuthController::class, "login"]);
     Route::get("/loginGoogle", [\App\Http\Controllers\API\V1\SocialiteController::class, "loginWithGoogle"]);
-    Route::get("/google/redirect", [\App\Http\Controllers\API\V1\SocialiteController::class, "googleCallback"]);
+    Route::get("/google-callback", [\App\Http\Controllers\API\V1\SocialiteController::class, "googleCallback"]);
     Route::get("/loginFacebook", [\App\Http\Controllers\API\V1\SocialiteController::class, "loginWithFacebook"]);
     Route::get("/facebook-callback", [\App\Http\Controllers\API\V1\SocialiteController::class, "facebookCallback"]);
     Route::get("/logout", [\App\Http\Controllers\API\V1\AuthController::class, "logout"])->middleware("loggedIn");
