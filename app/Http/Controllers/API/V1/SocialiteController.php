@@ -28,7 +28,7 @@ class SocialiteController extends Controller
     {
         $user = Socialite::driver('google')->stateless()->user();
 
-        $user = $this->socialiteService->loginRegisterSocialiteUser($user->name , $user->email , $user->id , 0);
+        $user = $this->socialiteService->loginRegisterSocialiteUser($user->name , $user->email , $user->id , "Google");
 
         $token = $user->createToken(env("SANCTUM_TOKEN"))->plainTextToken;
 
@@ -51,7 +51,7 @@ class SocialiteController extends Controller
     {
         $user = Socialite::driver('facebook')->stateless()->user();
 
-        $user = $this->socialiteService->loginRegisterSocialiteUser($user->name , $user->email , $user->id , 1);
+        $user = $this->socialiteService->loginRegisterSocialiteUser($user->name , $user->email , $user->id , "Facebook");
 
         $token = $user->createToken(env("SANCTUM_TOKEN"))->plainTextToken;
 

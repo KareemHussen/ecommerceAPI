@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\OAuthType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,6 +48,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected function socialType(): Attribute
+        {
+            return Attribute::make(
+                get: fn ($value) => isset($value) ? OAuthType::fromValue($value)->key : null,
+                set: fn ($value) => isset($value) ? OAuthType::fromKey($value) : null,
+            );
+    }
 
     public function products()
     {
