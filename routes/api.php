@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\CartController;
+use App\Http\Controllers\API\V1\CategoryController;
+use App\Http\Controllers\API\V1\OrderController;
+use App\Http\Controllers\API\V1\ProductController;
+use App\Http\Controllers\API\V1\SocialiteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,16 +25,31 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix("auth")->group(function(){
-    Route::post("/register", [\App\Http\Controllers\API\V1\AuthController::class, "register"]);
-    Route::post("/login", [\App\Http\Controllers\API\V1\AuthController::class, "login"]);
-    Route::get("/loginGoogle", [\App\Http\Controllers\API\V1\SocialiteController::class, "loginWithGoogle"]);
-    Route::get("/google-callback", [\App\Http\Controllers\API\V1\SocialiteController::class, "googleCallback"]);
-    Route::get("/loginFacebook", [\App\Http\Controllers\API\V1\SocialiteController::class, "loginWithFacebook"]);
-    Route::get("/facebook-callback", [\App\Http\Controllers\API\V1\SocialiteController::class, "facebookCallback"]);
-    Route::get("/logout", [\App\Http\Controllers\API\V1\AuthController::class, "logout"])->middleware("loggedIn");
-    Route::get("/logoutAll", [\App\Http\Controllers\API\V1\AuthController::class, "logoutAllDevices"])->middleware("loggedIn");
-
+    Route::post("/register", [AuthController::class, "register"]);
+    Route::post("/login", [AuthController::class, "login"]);
+    Route::get("/login-google", [SocialiteController::class, "loginWithGoogle"]);
+    Route::get("/google-callback", [SocialiteController::class, "googleCallback"]);
+    Route::get("/login-facebook", [SocialiteController::class, "loginWithFacebook"]);
+    Route::get("/facebook-callback", [SocialiteController::class, "facebookCallback"]);
+    Route::get("/logout", [AuthController::class, "logout"])->middleware("loggedIn");
+    Route::get("/logout-all", [AuthController::class, "logoutAllDevices"])->middleware("loggedIn");
 });
 
-Route::resource("product", \App\Http\Controllers\API\V1\ProductController::class)->middleware("loggedIn");
-Route::resource("category", \App\Http\Controllers\API\V1\CategoryController::class)->middleware("loggedIn");
+Route::resource("product", ProductController::class)->middleware("loggedIn");
+Route::resource("category", CategoryController::class)->middleware("loggedIn");
+Route::resource("order", OrderController::class)->middleware("loggedIn");
+
+Route::prefix("order")->middleware("loggedIn")->group(function(){
+    Route::get("/complete/{order}", [OrderController::class, "completeOrder"]);
+    Route::get("/cancel/{order}", [OrderController::class, "cancelOrder"]);
+});
+
+Route::prefix("cart")->middleware("loggedIn")->group(function(){
+    Route::get("/my-cart", [CartController::class, "show"]);
+    Route::get("/add-to-cart", [CartController::class, "store"]);
+    Route::delete("/remove-from-cart", [CartController::class, "destroy"]);
+});
+
+Route::get("category/show-admin/{category}", [CategoryController::class , "show_admin"])->middleware("loggedIn");
+
+Route::get("/category-show-admin", [CategoryController::class, "show_admin"])->middleware("loggedIn");

@@ -23,6 +23,8 @@ class ProductFactory extends Factory
             'name' => $this->faker->name,
             "image" => $this->faker->image,
             "description" => $this->faker->paragraph,
+            "quantity" => $this->faker->numberBetween(1 , 1000),
+            "live" => true,
             "price" => $this->faker->randomFloat(2 , 1 , 5000),
             "priceBefore" => $this->faker->randomFloat(2 , 1 , 5000),
             "category_id" => $this->faker->randomElement($categories_ids),

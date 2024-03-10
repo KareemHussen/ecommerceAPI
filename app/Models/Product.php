@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    public $fillable = ['name', 'description', 'price', 'priceBefore', 'image', 'user_id', 'category_id'];
+    public $fillable = ['name', 'description', 'price', 'priceBefore', 'image', 'user_id', 'category_id' , 'live' , 'quantity' , 'special_offer' , 'daily_offer'];
     
     public $casts = [
         "category_id" => "integer",
@@ -25,6 +25,22 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    // The users had this product in their cart
+    public function users()
+    {
+        return $this->belongsToMany(User::class , 'product_user')->withPivot('quantity');
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class , 'order_product')->withPivot('quantity');
+    }
+
+    public function scopeIsLive($query , bool $live)
+    {
+        return $query->where('live', $live);
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,6 +24,8 @@ class StoreProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:1',
+            'live' => 'required|boolean',
             'price' => 'required|min:1|max:99998.99|numeric|decimal:0,2', // make just 2 numbers after decimal
             'priceBefore' => 'required||max:99999.99|numeric|decimal:0,2|gt:price',
             'image' => 'image|max:1024',

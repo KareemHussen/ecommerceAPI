@@ -18,7 +18,12 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'parent_id' => $this->when(isset($this->parent_id), $this->parent_id),
-            'children' => $this->whenLoaded('children' , CategoryResource::collection($this->children))
+            'children' => $this->when(($request->is('api/category') && $request->isMethod("GET") && !isset($this->parent_id)), function () { 
+                return $this->whenLoaded('children' , CategoryResource::collection($this->children));
+            }),
+            'products' => $this->when($request->is('api/category/*'), function () { 
+                return $this->when(isset($this->products) , ProductResource::collection($this->products))->response()->getData();
+            }),
         ];
     }
 }
