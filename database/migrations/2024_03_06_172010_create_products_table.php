@@ -20,8 +20,8 @@ return new class extends Migration
             $table->boolean('live');
             $table->decimal('price', 7,2);
             $table->decimal('priceBefore', 7,2);
-            $table->boolean('special_offer')->default(false);
-            $table->date('daily_offer')->nullable()->default(null);
+            $table->date('special_offer')->nullable();
+            $table->date('daily_offer')->nullable();
             $table->string('image')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();

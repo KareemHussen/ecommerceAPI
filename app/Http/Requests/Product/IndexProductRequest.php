@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Rules\EmptyWith;
+use App\Rules\EmptyWithRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class IndexProductRequest extends FormRequest
@@ -23,6 +25,8 @@ class IndexProductRequest extends FormRequest
     {
         return [
             'query' => 'string',
+            'is_daily_deal' => ['boolean' , new EmptyWithRule()],
+            'is_offer' => ['boolean' , new EmptyWithRule()],
             'sort_by' => 'string|in:id,name,price', // also take asc or desc
             'asc' => 'boolean|required_with:sort_by',
             'per_page' => 'integer|min:1|max:30',

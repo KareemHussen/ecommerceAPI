@@ -11,6 +11,7 @@ use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Product;
 use App\Services\CategoryService;
+use Carbon\Carbon;
 use Directory;
 use Illuminate\Support\Facades\File;
 
@@ -62,16 +63,21 @@ class CategoryController extends Controller
         $query = Product::query()->isLive(true)->where('category_id' , $category->id);
 
         $query->when(isset($data['query']) , function($query) use($data){
-            $query->where('name' , 'like' , '%'.$data['query'].'%');
-        });
-        
-        $query->when(isset($data['sort_by']) , function($query) use($data){
-            if($data['asc']){
-                $query->orderBy($data['sort_by']);
-            } else{
-                $query->orderByDesc($data['sort_by']);
-            }
-        });
+            $query->where('name' , 'like' , '%'.$data['query'].'%'); 
+         })
+         ->when(isset($data['is_offer']) , function($query) use($data){
+             $query->where('special_offer' , '>' , Carbon::now());
+         })
+         ->when(isset($data['is_daily_offer']) , function($query) use($data){
+             $query->where('daily_offer' , '>' , Carbon::now());
+         })
+         ->when(isset($data['sort_by']) , function($query) use($data){
+             if($data['asc']){
+                 $query->orderBy($data['sort_by']);
+             } else{
+                 $query->orderByDesc($data['sort_by']);
+             }
+         });
 
         $category->products = $query->paginate($perPage);
 
@@ -88,21 +94,24 @@ class CategoryController extends Controller
 
         $query = Product::query()->where('category_id' , $category->id);
 
-        if (isset($data['live'])){
+        $query->when(isset($data['live']) , function($query) use($data){
             $query->isLive($data['live']);
-        }
-
-        if (isset($data['query'])){
-            $query->where('name' , 'like' , '%'. $data['query'] .'%');
-        }
-
-        if (isset($data['sort_by'])){
-            if($data['asc']){
-                $query->orderBy($data['sort_by']);
-            } else{
-                $query->orderByDesc($data['sort_by']);
-            }
-        }
+         })->when(isset($data['query']) , function($query) use($data){
+            $query->where('name' , 'like' , '%'.$data['query'].'%'); 
+         })
+         ->when(isset($data['is_offer']) , function($query) use($data){
+             $query->where('special_offer' , '>' , Carbon::now());
+         })
+         ->when(isset($data['is_daily_offer']) , function($query) use($data){
+             $query->where('daily_offer' , '>' , Carbon::now());
+         })
+         ->when(isset($data['sort_by']) , function($query) use($data){
+             if($data['asc']){
+                 $query->orderBy($data['sort_by']);
+             } else{
+                 $query->orderByDesc($data['sort_by']);
+             }
+         });
 
         $category->products = $query->paginate($perPage);
 

@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\Auth\AuthController;
+use App\Http\Controllers\API\V1\Auth\SocialiteController;
 use App\Http\Controllers\API\V1\CartController;
 use App\Http\Controllers\API\V1\CategoryController;
 use App\Http\Controllers\API\V1\OrderController;
 use App\Http\Controllers\API\V1\ProductController;
-use App\Http\Controllers\API\V1\SocialiteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,20 +20,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::prefix("auth")->group(function(){
-    Route::post("/register", [AuthController::class, "register"]);
-    Route::post("/login", [AuthController::class, "login"]);
-    Route::get("/login-google", [SocialiteController::class, "loginWithGoogle"]);
-    Route::get("/google-callback", [SocialiteController::class, "googleCallback"]);
-    Route::get("/login-facebook", [SocialiteController::class, "loginWithFacebook"]);
-    Route::get("/facebook-callback", [SocialiteController::class, "facebookCallback"]);
-    Route::get("/logout", [AuthController::class, "logout"])->middleware("loggedIn");
-    Route::get("/logout-all", [AuthController::class, "logoutAllDevices"])->middleware("loggedIn");
-});
+// Auth Routes are in auth.php
 
 Route::resource("product", ProductController::class)->middleware("loggedIn");
 Route::resource("category", CategoryController::class)->middleware("loggedIn");

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1;
+namespace App\Http\Controllers\API\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Services\SocialiteService;
@@ -32,8 +32,9 @@ class SocialiteController extends Controller
 
         $token = $user->createToken(env("SANCTUM_TOKEN"))->plainTextToken;
 
+        $user->token = $token;
+
         return $this->respondOk([
-            "token" => $token,
             "user" => $user
         ] , 'Login successfully');
 
@@ -55,8 +56,9 @@ class SocialiteController extends Controller
 
         $token = $user->createToken(env("SANCTUM_TOKEN"))->plainTextToken;
 
+        $user->token = $token;
+
         return $this->respondOk([
-            "token" => $token,
             "user" => $user
         ] , 'Login successfully');
 

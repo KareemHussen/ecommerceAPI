@@ -7,6 +7,7 @@ use App\Http\Requests\Product\IndexProductRequest;
 use App\Models\Product;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
@@ -22,9 +23,14 @@ class ProductController extends Controller
 
         $query->when(isset($data['query']) , function($query) use($data){
            $query->where('name' , 'like' , '%'.$data['query'].'%'); 
-        });
-
-        $query->when(isset($data['sort_by']) , function($query) use($data){
+        })
+        ->when(isset($data['is_offer']) , function($query) use($data){
+            $query->where('special_offer' , '>' , Carbon::now());
+        })
+        ->when(isset($data['is_daily_offer']) , function($query) use($data){
+            $query->where('daily_offer' , '>' , Carbon::now());
+        })
+        ->when(isset($data['sort_by']) , function($query) use($data){
             if($data['asc']){
                 $query->orderBy($data['sort_by']);
             } else{
@@ -45,9 +51,8 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $data = $request->validated();
-
         $data['user_id'] = $request->user->id;
-
+        
         if ($request->hasFile('image')) { 
             $file = $request->file('image');
             $name =  uniqid() . '.' . $file->extension();
@@ -55,7 +60,7 @@ class ProductController extends Controller
             $data['image'] = 'storage/images/categories/'. $data['category_id'] . "/products/" .$name;
         } 
 
-        $product = product::create($data);
+        $product = Product::create($data);
         return $this->respondCreated($product, 'product created successfully');
         
     }
