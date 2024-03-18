@@ -19,7 +19,7 @@ class LoggedInMiddleware
         $user = auth('sanctum')->user();
 
         if (!$user) {
-            return response(["message" => "Unauthorized"], 401);
+            return response(["message" => "Unauthorized"], 403);
         }
         
         // if (! $user->hasRole('Student')) {

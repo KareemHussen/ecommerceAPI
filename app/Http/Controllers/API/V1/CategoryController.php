@@ -12,7 +12,6 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Product;
 use App\Services\CategoryService;
 use Carbon\Carbon;
-use Directory;
 use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller

@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -43,6 +44,11 @@ class Handler extends ExceptionHandler
                     'message' => 'Order not found.'
                 ], 404);
             }
+        });
+
+        $this->renderable(function (UnauthorizedException $e, $request) {
+            return response(["message" => "Unauthorized"], 403);
+
         });
     }
 }

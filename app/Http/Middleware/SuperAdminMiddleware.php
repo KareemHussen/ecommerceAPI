@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ClientMiddleware
+class SuperAdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,7 +15,7 @@ class ClientMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user->hasRole('client')){
+        if (!$request->user->hasRole('superAdmin')){
             return response(["message" => "Unauthorized"], 403);
         }
         return $next($request);

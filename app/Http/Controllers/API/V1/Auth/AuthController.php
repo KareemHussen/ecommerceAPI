@@ -36,7 +36,7 @@ class AuthController extends Controller
         $token = $user->createToken(env("SANCTUM_TOKEN"))->plainTextToken;
 
         $user->token = $token;
-
+        $user->role = $user->getRoleNames()[0];
         return $this->respondOk([
             "user" => $user
         ] , 'Login successfully');
