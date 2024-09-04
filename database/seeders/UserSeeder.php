@@ -14,32 +14,34 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $supderAdminRole = Role::create(['name' => 'supderAdmin']);
-        $adminRole = Role::create(['name' => 'admin']);
+        $superAdminRole = Role::create(['name' => 'superAdmin']);
+        $deliveryRole = Role::create(['name' => 'delivery']);
         $clientRole = Role::create(['name' => 'client']);
-        $vendorRole = Role::create(['name' => 'vendor']);
 
         $superAdmin = User::create([
             'name' => 'Super Admin',
-            'email' => 'super-admin@super.con',
+            'email' => 'super-admin@super.com',
+            'phone' => '0123456789',
             'password' => bcrypt('12345678'),
         ]);
 
-        $admin = User::create([
-            'name' => 'admin',
-            'email' => 'admin@admin.com',
+        $delivery = User::create([
+            'name' => 'delivery',
+            'email' => 'delivery@delivery.com',
+            'phone' => '0123456789',
             'password' => bcrypt('12345678'),
         ]);
 
         $client = User::create([
             'name' => 'Kimo',
             'email' => 'kareemhussen500@gmail.com',
+            'phone' => '0123456789',
             'password' => bcrypt('12345678'),
         ]);
 
 
-        $superAdmin->assignRole($supderAdminRole);
-        $admin->assignRole($adminRole);
+        $superAdmin->assignRole($superAdminRole);
+        $delivery->assignRole($deliveryRole);
         $client->assignRole($clientRole);
 
 

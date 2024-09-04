@@ -2,16 +2,33 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Spatie\Permission\Exceptions\UnauthorizedException;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
     /**
-     * The list of the inputs that are never flashed to the session on validation exceptions.
+     * A list of exception types with their corresponding custom log levels.
+     *
+     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
+     */
+    protected $levels = [
+        //
+    ];
+
+    /**
+     * A list of the exception types that are not reported.
+     *
+     * @var array<int, class-string<\Throwable>>
+     */
+    protected $dontReport = [
+        //
+    ];
+
+    /**
+     * A list of the inputs that are never flashed to the session on validation exceptions.
      *
      * @var array<int, string>
      */
@@ -26,25 +43,9 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        // $this->reportable(function (Throwable $e) {
-        //     //
-        // });
+        // $this->renderable(function (NotFoundHttpException $e, $request) {
 
-        $this->renderable(function (NotFoundHttpException $e, $request) {
-            if ($request->is('api/product/*')) {
-                return response()->json([
-                    'message' => 'Product not found.'
-                ], 404);
-            } else if ($request->is('api/category/*')) {
-                return response()->json([
-                    'message' => 'Category not found.'
-                ], 404);
-            } else if ($request->is('api/order/*')) {
-                return response()->json([
-                    'message' => 'Order not found.'
-                ], 404);
-            }
-        });
+        // });
 
         $this->renderable(function (UnauthorizedException $e, $request) {
             return response(["message" => "Unauthorized"], 403);

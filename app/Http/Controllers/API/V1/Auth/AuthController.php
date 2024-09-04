@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginUserRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\SocialiteService;
 use Illuminate\Http\Request;
@@ -18,10 +19,10 @@ class AuthController extends Controller
         $user = User::create($request->validated());
         
         $user->assignRole('client');
+
         return $this->respondCreated($user, 'Registered successfully');
 
     }
-
 
     public function login(LoginUserRequest $request)
     {
@@ -33,13 +34,15 @@ class AuthController extends Controller
             return $this->respondError('Bad credentials.');
         }
 
+        if($user->ban){
+            return $this->respondError('Your account is banned until ' . $user->ban);
+        }
+
         $token = $user->createToken(env("SANCTUM_TOKEN"))->plainTextToken;
 
         $user->token = $token;
-        $user->role = $user->getRoleNames()[0];
-        return $this->respondOk([
-            "user" => $user
-        ] , 'Login successfully');
+
+        return $this->respondOk(UserResource::make($user) , 'Login successfully');
 
     }
 

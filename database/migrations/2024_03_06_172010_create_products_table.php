@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name');
+            $table->text('name');
             $table->text('description');
             $table->integer('quantity');
             $table->boolean('live');
@@ -22,7 +22,6 @@ return new class extends Migration
             $table->decimal('priceBefore', 7,2);
             $table->date('special_offer')->nullable();
             $table->date('daily_offer')->nullable();
-            $table->string('image')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
         });

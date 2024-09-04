@@ -25,10 +25,14 @@ class UpdateProductRequest extends FormRequest
             'description' => 'string|max:255',
             'quantity' => 'integer|min:1',
             'live' => 'boolean',
-            'price' => 'required_with:priceBefore|numeric|min:1|max:99998.99|numeric|decimal:0,2',
-            'priceBefore' => 'required_with:price|numeric|min:1|max:99999.99|decimal:0,2|gte:price',
-            'image' => 'image|max:1024',
+            'price' => 'min:1|max:99998.99|numeric|decimal:0,2',
+            'priceBefore' => '|max:99999.99|numeric|decimal:0,2|gt:price',
+            'image' => 'image|mimes:jpeg,jpg,png|max:2048',
+            'additional_images' => 'array|max:20',
+            'additional_images.*' => 'image|mimes:jpeg,jpg,png|max:2048',
             'category_id' => 'integer|min:1|exists:categories,id',
+            'special_offer' => 'date_format:Y-m-d h:i:s A|after_or_equal:' . date(DATE_ATOM),
+            'daily_offer' => 'date_format:Y-m-d h:i:s A|after_or_equal:' . date(DATE_ATOM),
         ];
     }
 }

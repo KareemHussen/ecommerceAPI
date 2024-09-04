@@ -29,6 +29,7 @@ class RegisterUserRequest extends FormRequest
             'name' => ['required', 'string' , new MinMaxWordsRule(1, 3)],
             'password' => 'required|string|confirmed|min:8|max:25',
             'email' => 'required|email|unique:users',
+            'phone' => ['required' ,'phone:EG'],
         ];
     }
 }

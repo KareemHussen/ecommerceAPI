@@ -30,6 +30,7 @@ class IndexProductRequest extends FormRequest
             'sort_by' => 'string|in:id,name,price', // also take asc or desc
             'asc' => 'boolean|required_with:sort_by',
             'per_page' => 'integer|min:1|max:30',
+            'category_id' => 'integer|exists:categories,id'
         ];
     }
 }

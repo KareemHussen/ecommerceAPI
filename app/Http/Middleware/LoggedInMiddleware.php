@@ -21,16 +21,10 @@ class LoggedInMiddleware
         if (!$user) {
             return response(["message" => "Unauthorized"], 403);
         }
-        
-        // if (! $user->hasRole('Student')) {
-        //     $response = [
-        //         'message' => 'Forbidden',
-        //         'data' => null,
-        //         'errors' => null,
-        //     ];
 
-        //     return response($response, 401);
-        // }
+        if ($user->ban && $user->ban > now()) {
+            return response(["message" => "User is banned until " . $user->ban], 403);
+        }
 
         $request->merge(['user' => $user]);
 

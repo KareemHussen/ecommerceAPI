@@ -59,7 +59,7 @@ class CategoryController extends Controller
         $data = $request->validated();
         $perPage = $data['per_page'] ?? 15;
 
-        $query = Product::query()->isLive(true)->where('category_id' , $category->id);
+        $query = Product::query()->isLive(true)->where('category_id' , $category->id)->with('main_image');
 
         $query->when(isset($data['query']) , function($query) use($data){
             $query->where('name' , 'like' , '%'.$data['query'].'%'); 
@@ -91,7 +91,7 @@ class CategoryController extends Controller
         $data = $request->validated();
         $perPage = $data['per_page'] ?? 15;
 
-        $query = Product::query()->where('category_id' , $category->id);
+        $query = Product::query()->where('category_id' , $category->id)->with('main_image');
 
         $query->when(isset($data['live']) , function($query) use($data){
             $query->isLive($data['live']);

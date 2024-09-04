@@ -23,20 +23,23 @@ class OrderController extends Controller
 
         $query = Order::query()->latest();
 
-        $query->when(isset($data['query']) , function($query) use($data){
-            $query->where('name' , 'like' , '%' . $data['query'] . '%');
-        });
-
+        // $query->when(isset($data['query']) , function($query) use($data){
+        //     $query->where('name' , 'like' , '%' . $data['query'] . '%');
+        // });
+        
         $query->when(isset($data['status']) , function($query) use($data){
             $query->where('status' , $data['status']);
         });
-
         $query->when(isset($data['sort_by']) , function($query) use($data){
             if($data['asc']){
                 $query->orderBy($data['sort_by']);
             } else{
                 $query->orderByDesc($data['sort_by']);
             }
+        })->when(isset($data['from']) , function($query) use($data){
+            $query->whereBetween('created_at' , '>=' , $data['from']);
+        })->when(isset($data['to']) , function($query) use($data){
+            $query->whereBetween('created_at' , '<=' , $data['to']);
         });
 
         $orders = $query->paginate($per_page);
@@ -148,8 +151,11 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show(Order $order , Request $request)
     {
+        if($order->user_id != $request->user->id && !$request->user->hasRole('delivery') && !$request->user->hasRole('superAdmin')){
+            return response(["message" => "Unauthorized"], 403);
+        }
         return $this->respondOk($order->load('products') , 'Order fetched successfully');
     }
 

@@ -21,10 +21,14 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'priceBefore' => $this->priceBefore,
             'quantity' => $this->quantity,
-            'image' => $this->image,
+            'image' => $this->whenLoaded("main_image") && $this->getFirstMediaUrl("main") != "" ? MediaResource::make($this->whenLoaded("main_image")[0]) : null,
+            'additional_images' => MediaResource::collection($this->whenLoaded("additional_images")),
             'description' => $this->description,
             'live' => $this->live,
-            
+            'special_offer' => $this->special_offer,
+            'daily_offer' => $this->daily_offer,
+            'similarProducts' => ProductResource::collection($this->whenLoaded('similarProducts')),
+            'ratings' => RatingResource::collection($this->whenLoaded('ratings')),
         ];
     }
 }
